@@ -34,9 +34,9 @@ binary_checks() {
     return 1
 }
 
-eval $(parse_yaml /tmp/tools.yaml "" "-")
+eval $(parse_yaml /tmp/tools.yaml)
 
-echo $tools_
+echo $tools_1_
 
 binary_checks test "fly" "fly --version"
 if [[ $? -eq 0 ]]
