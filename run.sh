@@ -30,7 +30,6 @@ binary_checks() {
     then
       local result=$(eval "${version_command}")
       eval $__resultvar=$result
-      echo $version_command
       return 0
     fi
     return 1
@@ -44,7 +43,6 @@ check_tools() {
     local name="${tool}name"
     local command="${tool}version_command"
     local minimum_version="${tool}minimum_version"
-    echo "${!command}"
     binary_checks test "${!name}" "${!command}"
     if [[ $? -eq 0 ]]
     then

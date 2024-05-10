@@ -6,3 +6,9 @@ tools:
   - name: docker
     version_command: "docker version | grep -m 2 Version | tail -n1 | awk '{print $2}'"
     minimum_version: "24.0"
+  - name: git
+    version_command: "git --version | awk '{print $NF}'"
+    minimum_version: "5.6"
+  - name: jq
+    version_command: "jq --version | awk -F- '{print $2}'"
+    minimum_version: "5.6"
