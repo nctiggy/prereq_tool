@@ -4,5 +4,5 @@ tools:
     version_command: "fly --version"
     minimum_version: "5.6"
   - name: docker
-    version_command: "docker --version | awk -F'[, ]' '{print $3}' | awk -F'[-]' '{print $1}'"
+    version_command: "docker --version | awk -F'[\, ]' '{print $3}' | awk -F'[-]' '{print $1}'"
     minimum_version: "24.0"

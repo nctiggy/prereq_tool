@@ -28,20 +28,30 @@ binary_checks() {
     command -v $tool_binary > /dev/null 2>&1 && [ -x $(command -v $tool_binary) ]
     if [ $? -eq 0 ]
     then
-      eval $__resultvar=$(eval $version_command)
+      local result=$(eval "${version_command}")
+      eval $__resultvar=$result
+      echo $version_command
       return 0
     fi
     return 1
 }
 
 eval $(parse_yaml /tmp/tools.yaml)
+check_tools() {
+  for t in $tools_
+  do
+    local tool=$(eval echo "\${t}_")
+    local name="${tool}name"
+    local command="${tool}version_command"
+    local minimum_version="${tool}minimum_version"
+    binary_checks test "${!name}" "${!command}"
+    if [[ $? -eq 0 ]]
+    then
+      echo "success ${test}"
+    else
+      echo "failure ${test}"
+    fi
+  done
+}
 
-echo $tools_1_
-
-binary_checks test "fly" "fly --version"
-if [[ $? -eq 0 ]]
-then
-  echo "success ${test}"
-else
-  echo "failure ${test}"
-fi
+check_tools
