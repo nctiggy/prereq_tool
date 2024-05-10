@@ -34,7 +34,7 @@ binary_checks() {
     return 1
 }
 
-eval $(parse_yaml /tmp/tools.yaml)
+eval $(parse_yaml /tmp/tools.yaml "" "-")
 
 echo $tools_
 
