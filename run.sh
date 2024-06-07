@@ -88,6 +88,18 @@ version_good() {
     return 1
 }
 
+usage=$(cat << EOM
+Prereq tool. Check for installed software.
+
+Options:
+  [ --tools | -t ]    Specify tools yaml file location
+  [ --help | -h ]     Print this help message
+
+Usage:
+  ./run.sh --tools /tmp/tools_file.yaml
+EOM
+)
+
 failed_software=()
 tools_yaml="/tmp/tools.yaml"
 current_version=0
@@ -100,6 +112,10 @@ do
       tools_yaml=$2
       shift
       shift
+      ;;
+    "--help"|"-h")
+      printf "${usage}\n"
+      exit 0
       ;;
     *)
       ;;

@@ -16,3 +16,6 @@ tools:
   - name: python3
     version_command: "python3 --version | awk '{print $2}'"
     minimum_version: "3.8"
+  - name: kubectl
+    version_command: "kubectl version --client=true -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
+    minimum_version: "1.29"
