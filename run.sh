@@ -9,7 +9,11 @@ source <(curl -fsSL https://raw.githubusercontent.com/mrbaseman/parse_yaml/maste
 ########################################################
 # Download tools.yaml to /tmp
 ########################################################
-curl -o /tmp/tools.yaml https://raw.githubusercontent.com/nctiggy/prereq_tool/main/tools.yaml > /dev/null 2>&1
+default_tools() {
+  curl -o /tmp/tools.yaml https://raw.githubusercontent.com/nctiggy/prereq_tool/main/tools.yaml > /dev/null 2>&1
+  tools_yaml="/tmp/tools.yaml"
+}
+
 
 ########################################################
 # Set color vars
@@ -50,6 +54,8 @@ binary_good() {
 # yaml file and checks for existance and version
 ########################################################
 check_tools() {
+  local __resultvar=$1
+  local unmet_reqs=()
   for t in $tools_
   do
     current_version=0
@@ -62,7 +68,7 @@ check_tools() {
     then
       printf "${green}${current_version}\n${reset}"
     else
-      failed_software=( "${failed_software[@]}" "${!name}" )
+      local unmet_reqs=( "${unmet_reqs[@]}" "${!name}" )
       if [ $current_version == "0" ]
       then
         printf "${red}Not Installed"
@@ -72,6 +78,11 @@ check_tools() {
       printf  " | minimum ver. ${!minimum_version}\n${reset}"
     fi
   done
+  eval $__resultvar=$unmet_reqs
+}
+
+install_tools() {
+  echo test
 }
 
 ########################################################
@@ -92,18 +103,26 @@ usage=$(cat << EOM
 Prereq tool. Check for installed software.
 
 Options:
-  [ --tools | -t ]    Specify tools yaml file location
-  [ --help | -h ]     Print this help message
+  [ --tools | -t ]      Specify tools yaml file location
+  [ --use-repo-tools ]  Use the default tools.yaml in the main repo
+  [ --accept | -y ]     Auto install unmet pre-reqs. No prompts
+  [ --help | -h ]       Print this help message
 
 Usage:
-  ./run.sh --tools /tmp/tools_file.yaml
+  ./run.sh --tools /tmp/tools_file.yaml --accept
+  -- or --
+  ./run.sh --use-repo-tools
 EOM
 )
+main() {
+  failed_software=()
+  current_version=0
+  eval $(parse_yaml "${tools_yaml}")
+  check_tools failed_software
+  echo ${failed_software[*]}
+}
 
-failed_software=()
-tools_yaml="/tmp/tools.yaml"
-current_version=0
-
+[[ $# -eq 0 ]] && printf "Missing options!\n\n${usage}\n"
 while [[ $# -gt 0 ]]
 do
   key="$1"
@@ -113,14 +132,18 @@ do
       shift
       shift
       ;;
+    "--use-repo-tools")
+      default_tools
+      shift
+      ;;
     "--help"|"-h")
       printf "${usage}\n"
       exit 0
       ;;
     *)
+      printf "Invalid Options: ${key}\n\n${usage}\n"
+      exit 1
       ;;
   esac
 done
-eval $(parse_yaml "${tools_yaml}")
-check_tools
-echo ${failed_software[*]}
+main
