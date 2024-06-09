@@ -66,7 +66,7 @@ check_tools() {
     then
       printf "${green}${current_version}\n${reset}"
     else
-      local failed_software=( "${failed_software[@]}" "${!name}" )
+      failed_software=( "${failed_software[@]}" "${!name}" )
       if [ $current_version == "0" ]
       then
         printf "${red}Not Installed"
