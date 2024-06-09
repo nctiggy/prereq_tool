@@ -54,8 +54,6 @@ binary_good() {
 # yaml file and checks for existance and version
 ########################################################
 check_tools() {
-  local __resultvar=$1
-  local unmet_reqs=()
   for t in $tools_
   do
     current_version=0
@@ -68,7 +66,7 @@ check_tools() {
     then
       printf "${green}${current_version}\n${reset}"
     else
-      local unmet_reqs=( "${unmet_reqs[@]}" "${!name}" )
+      local failed_software=( "${unmet_reqs[@]}" "${!name}" )
       if [ $current_version == "0" ]
       then
         printf "${red}Not Installed"
@@ -78,11 +76,10 @@ check_tools() {
       printf  " | minimum ver. ${!minimum_version}\n${reset}"
     fi
   done
-  eval $__resultvar=$unmet_reqs
 }
 
 install_tools() {
-  echo test
+  local distro=$(cat /etc/os-release | grep '^ID=' | awk -F= '{gsub (/"/, "", $2); print $2}')
 }
 
 ########################################################
@@ -115,13 +112,13 @@ Usage:
 EOM
 )
 main() {
-  failed_software=()
   current_version=0
   eval $(parse_yaml "${tools_yaml}")
-  check_tools failed_software
+  check_tools
   echo ${failed_software[*]}
 }
 
+failed_software=()
 [[ $# -eq 0 ]] && printf "Missing options!\n\n${usage}\n"
 while [[ $# -gt 0 ]]
 do
