@@ -63,7 +63,7 @@ tools:
         - apt update
         - apt install -y git
       rhel:
-        - yum install -y git
+        - dnf install -y git
   - name: jq
     version_command: "jq --version | awk -F- '{print $2}'"
     minimum_version: "1.6"
@@ -79,3 +79,9 @@ tools:
   - name: kubectl
     version_command: "kubectl version --client=true -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
     minimum_version: "1.29"
+    install_commands:
+      linux:
+        - rm -f `which kubectl`
+        - curl -L -o /tmp/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        - install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+        - rm -f /tmp/kubectl
