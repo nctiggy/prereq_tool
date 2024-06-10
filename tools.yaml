@@ -20,7 +20,7 @@ tools:
         - apt update
         - apt install -y vim
       rhel:
-        - yum install -y vim
+        - dnf install -y vim
   - name: docker
     version_command: "docker version | grep -m 2 Version | tail -n1 | awk '{print $2}'"
     minimum_version: "26.0.0"
@@ -58,9 +58,21 @@ tools:
   - name: git
     version_command: "git --version | awk '{print $NF}'"
     minimum_version: "2"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y git
+      rhel:
+        - yum install -y git
   - name: jq
     version_command: "jq --version | awk -F- '{print $2}'"
     minimum_version: "1.6"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y jq
+      rhel:
+        dnf install -y jq
   - name: python3
     version_command: "python3 --version | awk '{print $2}'"
     minimum_version: "3.8"
