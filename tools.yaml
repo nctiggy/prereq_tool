@@ -62,7 +62,7 @@ tools:
         - apt update
         - apt install -y jq
       rhel:
-        dnf install -y jq
+        - dnf install -y jq
   - name: python3
     version_command: "python3 --version | awk '{print $2}'"
     minimum_version: "3.8"

@@ -173,6 +173,7 @@ EOM
 main() {
   local failed_software=() install=""
   current_version=0
+  PATH=$PATH:/usr/local/bin
   eval $(parse_yaml "${tools_yaml}")
   check_tools failed_software
   ask_to_install install
