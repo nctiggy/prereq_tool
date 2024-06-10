@@ -8,9 +8,10 @@ tools:
       linux:
         - rm -f `which fly`
         - curl -L -o /tmp/fly.tgz https://github.com/concourse/concourse/releases/download/v7.11.2/fly-7.11.2-$(uname | awk '{print tolower($0)}')-amd64.tgz
-        - tar -xzf /tmp/fly.tgz
+        - tar -xzf /tmp/fly.tgz -C /tmp
         - rm -f /tmp/fly.tgz
-        - install fly /usr/local/bin/fly
+        - install /tmp/fly /usr/local/bin/fly
+        - rm -f /tmp/fly
   - name: docker
     version_command: "docker version | grep -m 2 Version | tail -n1 | awk '{print $2}'"
     minimum_version: "26.0.0"
