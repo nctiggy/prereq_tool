@@ -16,7 +16,7 @@ tools:
     minimum_version: "26.0.0"
     install_commands:
       ubuntu:
-        - for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt-get remove $pkg 2>/dev/null; done
+        - for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt-get remove $pkg >/dev/null 2>&1; done
         - apt-get update
         - apt-get install ca-certificates curl
         - install -m 0755 -d /etc/apt/keyrings

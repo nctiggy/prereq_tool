@@ -110,7 +110,7 @@ install_tools() {
     [[ " ${!install_var} " =~ "${distro}" ]] && install_steps="${install_var}${distro}_"
     for c in ${!install_steps}
     do
-      eval "(${!c}) 2>/dev/null &"
+      eval "(${!c}) >/dev/null 2>&1 &"
       pid=$!
       while kill -0 $pid 2>/dev/null
       do
