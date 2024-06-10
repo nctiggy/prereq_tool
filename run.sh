@@ -103,7 +103,7 @@ install_tools() {
     install_status ${!name} " " "green"
     local install_var="${tool}install_commands_"
     [[ -z ${!install_var+set} ]] && \
-      install_status ${!name} "${cross}" "red" && \
+      install_status ${!name} "${cross}" "red" "No install steps listed in the yaml" && \
       echo && \
       continue
     [[ " ${!install_var} " =~ "${kernel}" ]] && install_steps="${install_var}${kernel}_"
