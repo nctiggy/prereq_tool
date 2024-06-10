@@ -7,11 +7,11 @@ tools:
     install_commands:
       linux:
         - rm -f `which fly`
-        - curl -L -o /tmp/fly.tgz https://github.com/concourse/concourse/releases/download/v7.11.2/fly-7.11.2-$(uname | awk '{print tolower($0)}')-amd64.tgz
-        - tar -xzf /tmp/fly.tgz -C /tmp
-        - rm -f /tmp/fly.tgz
-        - install /tmp/fly /usr/local/bin/fly
-        - rm -f /tmp/fly
+        - curl -L -o ./fly.tgz https://github.com/concourse/concourse/releases/download/v7.11.2/fly-7.11.2-$(uname | awk '{print tolower($0)}')-amd64.tgz
+        - tar -xzf ./fly.tgz
+        - rm -f ./fly.tgz
+        - install ./fly /usr/local/bin/fly
+        - rm -f ./fly
   - name: vim
     version_command: "vim --version | grep 'Vi IMproved' | awk '{print $5}'"
     minimum_version: "8"
@@ -72,6 +72,6 @@ tools:
     install_commands:
       linux:
         - rm -f `which kubectl`
-        - curl -L -o /tmp/kubectl https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
-        - install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
-        - rm -f /tmp/kubectl
+        - curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+        - install -o root -g root -m 0755 ./kubectl /usr/local/bin/kubectl
+        - rm -f ./kubectl
