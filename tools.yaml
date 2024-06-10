@@ -8,7 +8,7 @@ tools:
       linux:
         - rm -f `which fly`
         - curl -L -o /tmp/fly.tgz https://github.com/concourse/concourse/releases/download/v7.11.2/fly-7.11.2-$(uname | awk '{print tolower($0)}')-amd64.tgz
-        - tar -xzvf /tmp/fly.tgz
+        - tar -xzf /tmp/fly.tgz
         - rm -f /tmp/fly.tgz
         - install fly /usr/local/bin/fly
   - name: docker
