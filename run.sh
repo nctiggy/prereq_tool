@@ -226,7 +226,7 @@ do
       ;;
   esac
 done
-[[ ! is_elevated ]] && \
+[[ is_elevated == 2 ]] && \
   echo "${red}Please re-run with elevated privileges${reset}" && \
   exit $E_NOTROOT
 main
