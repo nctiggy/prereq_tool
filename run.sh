@@ -157,6 +157,17 @@ version_good() {
     return 1
 }
 
+########################################################
+# Function that detirmines if the script is running with
+# elevated privs or not
+########################################################
+is_elevated() {
+  local is_sudo=1 is_root=1
+  [[ ! $(sudo -l &> /dev/null) ]] && is_sudo=1 || is_sudo=0
+  [[ $EUID -ne 0 ]] && is_root=1 || is_root=0
+  [[ $(($is_root + $is_sudo)) < 2 ]] && return 0 || return 1
+}
+
 ask_to_install() {
   local result="" __resultvar=$1
   printf "${magenta}Install required software? (Y/n): ${reset}"
@@ -215,4 +226,7 @@ do
       ;;
   esac
 done
+[[ ! is_elevated ]] && \
+  echo "${red}Please re-run with elevated privileges${reset}" && \
+  exit $E_NOTROOT
 main
