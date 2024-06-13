@@ -85,11 +85,19 @@ check_tools() {
   eval $__resultvar="'${result[@]}'"
 }
 
+########################################################
+# Function that prints the install status
+########################################################
 install_status() {
   local tool_name=$1 disp_char=$2 char_color=$3 fail_msg=$4
   printf "\r${cyan}[${!char_color}${disp_char}${cyan}] Installing ${tool_name} ${red}${fail_msg}${reset}"
 }
 
+########################################################
+# Function that loops through all the tools not
+# installed or at the correct version and runs through
+# the install_steps
+########################################################
 install_tools() {
   local distro=$(cat /etc/os-release | grep '^ID=' | awk -F= '{gsub (/"/, "", $2); print $2}')
   local kernel=$(uname | awk '{print tolower($0)}')
@@ -102,12 +110,15 @@ install_tools() {
     [[ ! " ${install_tools[*]} " =~ "${!name}" ]] && continue
     install_status ${!name} " " "green"
     local install_var="${tool}install_commands_"
-    [[ -z ${!install_var+set} ]] && \
-      install_status ${!name} "${cross}" "red" "No install steps listed in the yaml" && \
-      echo && \
+    if [[ -z ${!install_var+set} ]]
+    then
+      install_status ${!name} "${cross}" "red" "No install steps listed in the yaml"
+      echo
       continue
+    fi
     [[ " ${!install_var} " =~ "${kernel}" ]] && install_steps="${install_var}${kernel}_"
     [[ " ${!install_var} " =~ "${distro}" ]] && install_steps="${install_var}${distro}_"
+    [[ " ${!install_var} " =~ "all" ]] && install_steps=( "${install_steps[@]}" "${install_var}all_" )
     for c in ${!install_steps}
     do
       eval "(${!c}) >/dev/null 2>&1 &"
