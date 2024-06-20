@@ -46,7 +46,7 @@ binary_good() {
     command -v $tool_binary > /dev/null 2>&1 && [ -x "$(command -v $tool_binary)" ]
     if [ $? -eq 0 ]
     then
-      local result=$(eval "${version_command}")
+      local result=$(eval "${version_command}" 2> /dev/null)
       eval $__resultvar=$result
       return 0
     fi
@@ -192,17 +192,32 @@ Usage:
   ./run.sh --use-repo-tools
 EOM
 )
+
+req_met=$(cat << EOM
+${green}All requirements met!${reset}
+EOM
+)
+
 main() {
   local failed_software=() install=""
   current_version=0
   PATH=$PATH:/usr/local/bin
   eval $(parse_yaml "${tools_yaml}")
   check_tools failed_software
+  printf "${failed_software[@]}\n"
+  if [[ ${failed_software[@]} == "" ]]
+  then
+    printf "${req_met}\n"
+    exit 0
+  fi
   ask_to_install install
-  [[ "${install}" == "y" ]] && install_tools "${failed_software[@]}"
+  [[ "${install}" == "y" ]] && install_tools "${failed_software[@]}" || exit 0
+  main
 }
 
-[[ $# -eq 0 ]] && printf "Missing options!\n\n${usage}\n"
+[[ $# -eq 0 ]] && \
+  printf "Missing options!\n\n${usage}\n" && \
+  exit 1
 while [[ $# -gt 0 ]]
 do
   key="$1"
@@ -226,7 +241,8 @@ do
       ;;
   esac
 done
-[[ is_elevated == 1 ]] && \
+is_elevated
+[[ $? == 1 ]] && \
   echo "${red}Please re-run with elevated privileges${reset}" && \
   exit $E_NOTROOT
 main
