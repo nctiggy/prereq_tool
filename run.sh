@@ -204,7 +204,6 @@ main() {
   PATH=$PATH:/usr/local/bin
   eval $(parse_yaml "${tools_yaml}")
   check_tools failed_software
-  printf "${failed_software[@]}\n"
   if [[ ${failed_software[@]} == "" ]]
   then
     printf "${req_met}\n"
