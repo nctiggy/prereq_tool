@@ -10,6 +10,9 @@ Prereq tool. Check for installed software.
 Options:
   
   [ --tools | -t ]      Specify tools yaml file location
+  
   [ --use-repo-tools ]  Use the default tools.yaml in the main repo
+  
   [ --accept | -y ]     Auto install unmet pre-reqs. No prompts
+  
   [ --help | -h ]       Print this help message
