@@ -12,6 +12,24 @@ tools:
         - rm -f ./fly.tgz
         - install ./fly /usr/local/bin/fly
         - rm -f ./fly
+  - name: pip
+    version_command: "pip --version | awk '{print $2}'"
+    minimum_version: "22"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y python3-pip
+      rhel:
+        - dnf install -y python3-pip
+  - name: unzip
+    minimum_version: "6"
+    version_command: "unzip -v | head -n 1 | awk '{print $2}'"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y unzip
+      rhel:
+        - dnf install -y unzip
   - name: vim
     version_command: "vim --version | grep 'Vi IMproved' | awk '{print $5}'"
     minimum_version: "8"
@@ -70,6 +88,8 @@ tools:
       ubuntu:
         - apt update
         - apt install -y python3
+      rhel:
+        - dnf install -y python3.12
   - name: kubectl
     version_command: "kubectl version --client=true -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
     minimum_version: "1.29"
