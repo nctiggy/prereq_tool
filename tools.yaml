@@ -1,17 +1,5 @@
 ---
 tools:
-  - name: fly
-    version_command: "fly --version"
-    minimum_version: "7"
-    install_version: "7.11.2"
-    install_commands:
-      linux:
-        - rm -f `which fly`
-        - curl -L -o ./fly.tgz https://github.com/concourse/concourse/releases/download/v7.11.2/fly-7.11.2-$(uname | awk '{print tolower($0)}')-amd64.tgz
-        - tar -xzf ./fly.tgz
-        - rm -f ./fly.tgz
-        - install ./fly /usr/local/bin/fly
-        - rm -f ./fly
   - name: pip
     version_command: "pip --version | awk '{print $2}'"
     minimum_version: "22"
