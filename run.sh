@@ -26,7 +26,6 @@ blue=`tput setaf 4`
 magenta=`tput setaf 5`
 check="\xE2\x9C\x93"
 cross="X"
-colors=("${magenta}" "${red}" "${green}" "${cyan}" "${blue}")
 spin='-\|/'
 
 ########################################################
@@ -58,13 +57,16 @@ binary_good() {
 # yaml file and checks for existance and version
 ########################################################
 check_tools() {
-  local __resultvar=$1
+  local __resultvar=$1 tools=("$@")
   local result=()
   for t in $tools_
   do
     current_version=0
     local tool=$(eval echo "\${t}_")
     local name="${tool}name"
+    [[ ! " ${tools[*]} " =~ "${!name}" ]] && continue
+    name="${!name}"
+    tools=( "${tools[@]/$name}" )
     local command="${tool}version_command"
     local minimum_version="${tool}minimum_version"
     binary_good current_version "${!name}" "${!command}" && version_good ${!minimum_version} ${current_version}
@@ -72,7 +74,7 @@ check_tools() {
     then
       printf "${green}${current_version}\n${reset}"
     else
-      result=( "${result[@]}" "${!name}" )
+      result=( "${result[@]}" "${name}" )
       if [ $current_version == "0" ]
       then
         printf "${red}Not Installed"
@@ -82,6 +84,28 @@ check_tools() {
       printf  " | minimum ver. ${!minimum_version}\n${reset}"
     fi
   done
+  eval $__resultvar="'${result[@]}'"
+}
+
+########################################################
+# Function that builds an array of apps to install
+# based off of the selected tools_pack arg
+########################################################
+
+get_tool_pack() {
+  local __resultvar=$1
+  local result=()
+  for tp in $tool_packs_
+  do
+    [[ "${tool_pack}" != "${!tp}" ]] && continue
+    for tpt in ${!tp}_tools_
+    do
+      result=( "${result[@]}" "${!tpt}" )
+    done
+    break
+  done
+  [[ ${#result[@]} -eq 0 ]] && echo "${red}--tool-pack ${tool_pack} not found or no tools in pack"
+  exit 1
   eval $__resultvar="'${result[@]}'"
 }
 
@@ -203,7 +227,8 @@ main() {
   current_version=0
   PATH=$PATH:/usr/local/bin
   eval $(parse_yaml "${tools_yaml}")
-  check_tools failed_software
+  get_tool_pack tools
+  check_tools failed_software "${tools[@]}"
   if [[ ${failed_software[@]} == "" ]]
   then
     printf "${req_met}\n"
@@ -223,6 +248,11 @@ do
   case $key in
     "--tools"|"-t")
       tools_yaml=$2
+      shift
+      shift
+      ;;
+    "--tool-pack"|"-tp")
+      tool_pack=$2
       shift
       shift
       ;;

@@ -1,5 +1,55 @@
 ---
+tool_packs:
+  - name: palette-agent-mode
+    tools:
+      - jq
+      - zstd
+      - rsync
+      - iptables
+      - rsyslog
+      - palette-edge
 tools:
+  - name: zstd
+    version_command: "zstd -V | awk '{print $7}' | sed 's/.$//'"
+    minimum_version: "1"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y zstd
+      rhel:
+        - dnf install -y zstd
+  - name: rsync
+    version_command: "rsync --version | awk 'NR==1{print $3}'"
+    minimum_version: "3"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y rsync
+      rhel:
+        - dnf install -y rsync
+  - name: iptables
+    version_command: "iptables --version | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: 1
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt insatll -y iptables
+      rhel:
+        - dnf install iptables iptables-services -y
+        - systemctl enable --now iptables
+        - systemctl disable --now firewalld
+        - systemctl enable iptables
+  - name: rsyslog
+    version_command: "rsyslogd -v | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: 8
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt install -y rsyslog
+      rhel:
+        - dnf install -y rsyslog
+      all:
+        - systemctl enable --now rsyslog
   - name: pip
     version_command: "pip --version | awk '{print $2}'"
     minimum_version: "22"
@@ -87,3 +137,11 @@ tools:
         - curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
         - install -o root -g root -m 0755 ./kubectl /usr/local/bin/kubectl
         - rm -f ./kubectl
+  - name: palette-edge
+    version_command: "palette-edge --version | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: "4.6.3"
+    install_commands:
+      linux:
+        - curl -LO https://software.spectrocloud.com/stylus/v4.6.3/cli/linux/palette-edge
+        - install -o root -g root -m 0755 ./palette-edge /usr/local/bin/palette-edge
+        - rm -f ./palette-edge
