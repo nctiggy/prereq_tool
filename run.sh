@@ -57,25 +57,27 @@ binary_good() {
 # yaml file and checks for existance and version
 ########################################################
 check_tools() {
-  local __resultvar=$1 tools=("$@")
+  local __resultvar=$1
+  shift
+  local pack_tools=("$@")
   local result=()
   for t in $tools_
   do
     current_version=0
     local tool=$(eval echo "\${t}_")
     local name="${tool}name"
-    [[ ! " ${tools[*]} " =~ "${!name}" ]] && continue
+    [[ ! " ${pack_tools[*]} " =~ "${!name}" ]] && continue
     name="${!name}"
-    tools=( "${tools[@]/$name}" )
+    tools=( "${pack_tools[@]/$name}" )
     local command="${tool}version_command"
     local minimum_version="${tool}minimum_version"
-    binary_good current_version "${!name}" "${!command}" && version_good ${!minimum_version} ${current_version}
+    binary_good current_version "${name}" "${!command}" && version_good ${!minimum_version} ${current_version}
     if [[ $? -eq 0 ]]
     then
       printf "${green}${current_version}\n${reset}"
     else
       result=( "${result[@]}" "${name}" )
-      if [ $current_version == "0" ]
+      if [[ $current_version == "0" ]]
       then
         printf "${red}Not Installed"
       else
@@ -97,15 +99,16 @@ get_tool_pack() {
   local result=()
   for tp in $tool_packs_
   do
-    [[ "${tool_pack}" != "${!tp}" ]] && continue
-    for tpt in ${!tp}_tools_
+    local name=$(eval echo "\${tp}_name")
+    [[ "${tool_pack}" != "${!name}" ]] && continue
+    local tools=$(eval echo "\${tp}_tools_")
+    for tpt in ${!tools}
     do
       result=( "${result[@]}" "${!tpt}" )
     done
     break
   done
-  [[ ${#result[@]} -eq 0 ]] && echo "${red}--tool-pack ${tool_pack} not found or no tools in pack"
-  exit 1
+  [[ ${#result[@]} -eq 0 ]] && echo "${red}--tool-pack ${tool_pack} not found or no tools in pack" && exit 1
   eval $__resultvar="'${result[@]}'"
 }
 
@@ -205,15 +208,16 @@ usage=$(cat << EOM
 Prereq tool. Check for installed software.
 
 Options:
-  [ --tools | -t ]      Specify tools yaml file location
-  [ --use-repo-tools ]  Use the default tools.yaml in the main repo
-  [ --accept | -y ]     Auto install unmet pre-reqs. No prompts
-  [ --help | -h ]       Print this help message
+  [ --tools | -t ]         Specify tools yaml file location
+  [ --tool-pack | -tp ]   Specify tool pack you want to install
+  [ --use-repo-tools ]     Use the default tools.yaml in the main repo
+  [ --accept | -y ]        Auto install unmet pre-reqs. No prompts
+  [ --help | -h ]          Print this help message
 
 Usage:
-  ./run.sh --tools /tmp/tools_file.yaml --accept
+  ./run.sh --tools /tmp/tools_file.yaml --tool-pack ai-workstation --accept
   -- or --
-  ./run.sh --use-repo-tools
+  ./run.sh --use-repo-tools --tool-pack ai-workstation
 EOM
 )
 
@@ -223,12 +227,12 @@ EOM
 )
 
 main() {
-  local failed_software=() install=""
+  local failed_software=() install="" tools=()
   current_version=0
   PATH=$PATH:/usr/local/bin
   eval $(parse_yaml "${tools_yaml}")
-  get_tool_pack tools
-  check_tools failed_software "${tools[@]}"
+  get_tool_pack tools_to_install
+  check_tools failed_software "${tools_to_install[@]}"
   if [[ ${failed_software[@]} == "" ]]
   then
     printf "${req_met}\n"

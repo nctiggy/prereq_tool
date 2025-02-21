@@ -6,11 +6,11 @@ tool_packs:
       - zstd
       - rsync
       - iptables
-      - rsyslog
+      - rsyslogd
       - palette-edge
 tools:
   - name: zstd
-    version_command: "zstd -V | awk '{print $7}' | sed 's/.$//'"
+    version_command: "zstd --version | grep -oP '\d+\.\d+\.\d+'"
     minimum_version: "1"
     install_commands:
       ubuntu:
@@ -39,7 +39,7 @@ tools:
         - systemctl enable --now iptables
         - systemctl disable --now firewalld
         - systemctl enable iptables
-  - name: rsyslog
+  - name: rsyslogd
     version_command: "rsyslogd -v | grep -oP '\d+\.\d+\.\d+'"
     minimum_version: 8
     install_commands:
