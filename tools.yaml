@@ -144,10 +144,10 @@ tools:
         - rm -f ./kubectl
   - name: palette
     version_command: "palette version | grep -oP '\d+\.\d+\.\d+'"
-    minimum_version: "4.6.0"
+    minimum_version: "4.5"
     install_commands:
       linux:
-        - curl -LO https://software.spectrocloud.com/palette-cli/v4.6.0/linux/cli/palette
+        - curl -LO https://software.spectrocloud.com/palette-cli/v4.5.7/linux/cli/palette
         - install -o root -g root -m 0755 ./palette /usr/local/bin/palette
         - rm -f ./palette
   - name: palette-edge
