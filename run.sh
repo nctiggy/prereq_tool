@@ -108,7 +108,7 @@ get_tool_pack() {
     done
     break
   done
-  [[ ${#result[@]} -eq 0 ]] && echo "${red}--tool-pack ${tool_pack} not found or no tools in pack" && exit 1
+  [[ ${#result[@]} -eq 0 ]] && echo "${red}--tool-pack ${tool_pack} not found or no tools in pack${reset}" && exit 1
   eval $__resultvar="'${result[@]}'"
 }
 
