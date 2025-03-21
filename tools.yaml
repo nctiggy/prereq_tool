@@ -1,5 +1,10 @@
 ---
 tool_packs:
+  - name: edge-build
+    tools:
+      - docker
+      - git
+      - earthly
   - name: pcg
     tools:
       - docker
@@ -14,6 +19,14 @@ tool_packs:
       - rsyslogd
       - palette-edge
 tools:
+  - name: earthly
+    version_command: "earthly --version | grep -oP '\d+\.\d+\.\d+' | awk 'NR==1'"
+    minimum_version: "0.8.15"
+    install_commands:
+      linux:
+        - wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly
+        - chmod +x /usr/local/bin/earthly
+        - earthly bootstrap --with-autocomplete
   - name: zstd
     version_command: "zstd --version | grep -oP '\d+\.\d+\.\d+'"
     minimum_version: "1"
