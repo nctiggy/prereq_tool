@@ -197,10 +197,15 @@ is_elevated() {
 
 ask_to_install() {
   local result="" __resultvar=$1
-  printf "${magenta}Install required software? (Y/n): ${reset}"
-  read result
-  [[ "${result}" == "" ]] && result="y"
-  result=$(echo ${result} | awk '{print tolower($0)}')
+  if [ -z ${accept+x} ]
+  then
+    printf "${magenta}Install required software? (Y/n): ${reset}"
+    read result
+    [[ "${result}" == "" ]] && result="y"
+    result=$(echo ${result} | awk '{print tolower($0)}')
+  else
+    result="y"
+  fi
   eval $__resultvar="'$result'"
 }
 
@@ -262,6 +267,10 @@ do
       ;;
     "--use-repo-tools")
       default_tools
+      shift
+      ;;
+    "--accept"|"-y")
+      accept=0
       shift
       ;;
     "--help"|"-h")
