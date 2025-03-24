@@ -5,6 +5,7 @@ tool_packs:
       - docker
       - git
       - earthly
+      - skopeo
   - name: pcg
     tools:
       - docker
@@ -19,6 +20,15 @@ tool_packs:
       - rsyslogd
       - palette-edge
 tools:
+  - name: skopeo
+    version_command: "skopeo --version | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: "1.4"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt -y install skopeo
+      rhel:
+        - dnf -y install skopeo
   - name: earthly
     version_command: "earthly --version | grep -oP '\d+\.\d+\.\d+' | awk 'NR==1'"
     minimum_version: "0.8.15"
