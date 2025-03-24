@@ -18,8 +18,17 @@ tool_packs:
       - rsync
       - iptables
       - rsyslogd
-      - palette-edge
+      - conntrack
 tools:
+  - name: conntrack
+    version_command: "conntrack --version | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: "1.4"
+    install_commands:
+      ubuntu:
+        - apt update
+        - apt -y install conntrack
+      rhel:
+        - dnf -y install conntrack
   - name: skopeo
     version_command: "skopeo --version | grep -oP '\d+\.\d+\.\d+'"
     minimum_version: "1.4"
