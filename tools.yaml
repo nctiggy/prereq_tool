@@ -19,6 +19,7 @@ tool_packs:
       - iptables
       - rsyslogd
       - conntrack
+      - palette-agent
 tools:
   - name: conntrack
     version_command: "conntrack --version | grep -oP '\d+\.\d+\.\d+'"
@@ -190,3 +191,11 @@ tools:
         - curl -LO https://software.spectrocloud.com/stylus/v4.6.3/cli/linux/palette-edge
         - install -o root -g root -m 0755 ./palette-edge /usr/local/bin/palette-edge
         - rm -f ./palette-edge
+  - name: palette-agent
+    version_command: "palette-agent version |grep agent | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: "4.6.9"
+    install_commands:
+      linux:
+        - curl -LO https://github.com/spectrocloud/agent-mode/releases/download/v4.6.9/palette-agent-linux-amd64
+        - install -o root -g root -m 0755 ./palette-agent-linux-amd64 /usr/local/bin/palette-agent
+        - rm -f ./palette-agent
