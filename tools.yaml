@@ -12,6 +12,10 @@ tool_packs:
       - kubectl
       - git
       - yq
+      - clusterctl
+      - flux
+      - clusterawsadm
+      - terraform
   - name: pcg
     tools:
       - docker
@@ -157,7 +161,7 @@ tools:
       rhel:
         - dnf install -y git
     - name: yq
-    version_command: "yq --version | awk '{print $4}'"
+    version_command: "yq --version | awk '{print $4}' | sed 's/^v\(.*\)/\1/'"
     minimum_version: "4.45"
     install_commands:
       darwin:
@@ -187,6 +191,35 @@ tools:
         - apt install -y python3
       rhel:
         - dnf install -y python3.12
+  - name: duck
+    version_command: "duck --version | awk '{print $2}'"
+    minium_version: "3.2.3"
+    install_commands:
+  - name: terraform
+    version_command: "terraform version | awk 'NR==1{print $2}' | sed 's/^v\(.*\)/\1/'"
+    minimum_version: "1.12"
+    install_commands:
+      darwin:
+        - brew tap hashicorp/tap
+        - brew install hashicorp/tap/terraform
+  - name: clusterctl
+    version_command: "clusterctl version -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
+    minimum_version: "1.10"
+    install_commands:
+      brew:
+        - brew install clusterctl
+  - name: clusterawsadm
+    version_command: "clusterawsadm version -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
+    minimum_version: "2.8"
+    install_commands:
+      brew:
+        - brew install clusterawsadm
+  - name: flux
+    version_command: "flux -v | awk '{print $3}'"
+    minimum_version: "2.5.1"
+    install_commands:
+      darwin:
+        - brew install fluxcd/tap/flux
   - name: kubectl
     version_command: "kubectl version --client=true -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
     minimum_version: "1.29"
