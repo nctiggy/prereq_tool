@@ -6,6 +6,12 @@ tool_packs:
       - git
       - earthly
       - skopeo
+  - name: tmo-takeover
+    tools:
+      - jq
+      - kubectl
+      - git
+      - yq
   - name: pcg
     tools:
       - docker
@@ -148,6 +154,16 @@ tools:
         - apt install -y git
       rhel:
         - dnf install -y git
+    - name: yq
+    version_command: "yq --version | grep -oP '\d+\.\d+\.\d+'"
+    minimum_version: "4.45"
+    install_commands:
+      darwin:
+      ubuntu:
+        - apt update
+        - apt install -y jq
+      rhel:
+        - dnf install -y jq
   - name: jq
     version_command: "jq --version | awk -F- '{print $2}'"
     minimum_version: "1.6"
