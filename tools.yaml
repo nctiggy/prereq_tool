@@ -16,6 +16,9 @@ tool_packs:
       - flux
       - clusterawsadm
       - terraform
+      - duck
+      - aws
+      - iam
   - name: pcg
     tools:
       - docker
@@ -194,6 +197,14 @@ tools:
   - name: duck
     version_command: "duck --version | awk '{print $2}'"
     minium_version: "3.2.3"
+    install_commands:
+  - name: aws
+    version_command: "aws --version | awk '{print $1}' | sed 's/.*\///'"
+    minimum_version: "2.17.17"
+    install_commands:
+  - name: iam
+    version_command: "iam --version | awk '{print $3}'"
+    minimum_version: "2"
     install_commands:
   - name: terraform
     version_command: "terraform version | awk 'NR==1{print $2}' | sed 's/^v\(.*\)/\1/'"
