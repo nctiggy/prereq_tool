@@ -149,25 +149,30 @@ tools:
     version_command: "git --version | awk '{print $NF}'"
     minimum_version: "2"
     install_commands:
+      darwin:
+        - brew install git
       ubuntu:
         - apt update
         - apt install -y git
       rhel:
         - dnf install -y git
     - name: yq
-    version_command: "yq --version | grep -oP '\d+\.\d+\.\d+'"
+    version_command: "yq --version | awk '{print $4}'"
     minimum_version: "4.45"
     install_commands:
       darwin:
+        - brew install yq
       ubuntu:
         - apt update
-        - apt install -y jq
+        - apt install -y yq
       rhel:
-        - dnf install -y jq
+        - dnf install -y yq
   - name: jq
     version_command: "jq --version | awk -F- '{print $2}'"
     minimum_version: "1.6"
     install_commands:
+      darwin:
+        - brew install jq
       ubuntu:
         - apt update
         - apt install -y jq
@@ -186,6 +191,8 @@ tools:
     version_command: "kubectl version --client=true -o yaml | grep gitVersion | awk '{print $2}' | sed 's/^v\(.*\)/\1/'"
     minimum_version: "1.29"
     install_commands:
+      darwin:
+        - brew install kubernetes-cli
       linux:
         - rm -f `which kubectl`
         - curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
